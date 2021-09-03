@@ -1,0 +1,17 @@
+[package]
+name = "matrix-openai-bot"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+matrix-sdk = { git = "https://github.com/matrix-org/matrix-rust-sdk", rev = "52fd551" }
+# Do not yell at me. I repeat, do NOT yell at me.
+tokio = { version = "1.11.0", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+tracing-subscriber = "0.2.20"
+serde_json = "1.0"
+reqwest = "0.11.4"
+dirs = "3.0.2"
+url = "2.2.2"
