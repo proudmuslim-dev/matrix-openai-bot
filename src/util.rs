@@ -15,7 +15,7 @@ pub async fn get_response(client: reqwest::Client, prompt: String) -> GPTRespons
     let res = client
         .post("https://api.openai.com/v1/engines/davinci/completions")
         .headers(headers)
-        .body("{ \"prompt\": \"Once upon\", \"max_tokens\": 50, \"temperature\": 0.6, \"presence_penalty\": 0.5, \"frequency_penalty\": 0.1}".replace("Once upon", prompt.as_str()))
+        .body("{ \"prompt\": \"Once upon\", \"max_tokens\": 50, \"temperature\": 0.6, \"presence_penalty\": 0.5, \"frequency_penalty\": 0.1}".replace("Once upon", prompt.replace("\n", " ").as_str())) // Yes, I'm aware this is a terrible hack, but I'm past caring
         .send()
         .await.unwrap()
         .text()
