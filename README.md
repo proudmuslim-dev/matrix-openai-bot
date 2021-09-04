@@ -9,7 +9,7 @@ Matrix bot inspired by [Shirt Bot](https://github.com/Cyclcrclicly/shirt-bot/).
 ## Usage
 
 ```bash
-OPENAI_SK="YourTokenHere" matrix-openai-bot https://homeserver_url.here username password
+OPENAI_SK="YourTokenHere" matrix-openai-bot https://homeserver-url.here username password
 ```
 
 ## Features

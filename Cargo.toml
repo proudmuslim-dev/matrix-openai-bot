@@ -3,8 +3,6 @@ name = "matrix-openai-bot"
 version = "0.1.0"
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 matrix-sdk = { git = "https://github.com/matrix-org/matrix-rust-sdk", rev = "52fd551" }
 # Do not yell at me. I repeat, do NOT yell at me.
