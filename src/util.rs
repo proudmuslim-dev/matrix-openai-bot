@@ -1,8 +1,11 @@
-use crate::openai::GPTResponse;
+use crate::openai::{GPTRequest, GPTResponse};
 use reqwest::header;
 use std::env;
 
 pub async fn get_response(client: reqwest::Client, prompt: String) -> GPTResponse {
+    let mut req_body = GPTRequest::new();
+    req_body.set_prompt(prompt.replace(r#"""#, "\"").as_str());
+
     let mut headers = header::HeaderMap::new();
     headers.insert("Content-Type", "application/json".parse().unwrap());
     headers.insert(
@@ -12,14 +15,17 @@ pub async fn get_response(client: reqwest::Client, prompt: String) -> GPTRespons
             .parse()
             .unwrap(),
     );
+
     let res = client
         .post("https://api.openai.com/v1/engines/davinci/completions")
         .headers(headers)
-        .body("{ \"prompt\": \"Once upon\", \"max_tokens\": 50, \"temperature\": 0.6, \"presence_penalty\": 0.5, \"frequency_penalty\": 0.1}".replace("Once upon", prompt.replace("\n", " ").as_str())) // Yes, I'm aware this is a terrible hack, but I'm past caring
+        .body(serde_json::to_string(&req_body).unwrap())
         .send()
-        .await.unwrap()
+        .await
+        .unwrap()
         .text()
-        .await.unwrap();
+        .await
+        .unwrap();
 
     serde_json::from_str(res.replace("null", "\"null\"").as_str()).unwrap()
 }

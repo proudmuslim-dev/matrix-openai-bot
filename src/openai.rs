@@ -8,9 +8,8 @@ pub struct GPTRequest {
     top_p: u8,
     n: u8,
     stream: bool,
-    logprobs: String,
     stop: String,
-    echo: bool
+    echo: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -39,9 +38,8 @@ impl GPTRequest {
             top_p: 1,
             n: 1,
             stream: false,
-            logprobs: "null".to_owned(),
             stop: "\n".to_owned(),
-            echo: false
+            echo: false,
         }
     }
 
@@ -69,6 +67,5 @@ impl GPTRequest {
 impl GPTResponse {
     pub fn get_text(&self) -> &str {
         self.choices[0].text.as_str()
-        // .replace("\\n", "\n",).replace("\\t", "\t").as_str()
     }
 }
