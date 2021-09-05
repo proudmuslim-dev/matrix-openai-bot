@@ -8,7 +8,7 @@ use matrix_sdk::{
     Client, ClientConfig, EventHandler, SyncSettings,
 };
 
-use crate::{config::BotConfig, util};
+use crate::{bot::BotConfig, utils};
 
 use std::process::exit;
 use url::Url;
@@ -46,7 +46,7 @@ impl EventHandler for OpenAIBot {
                 let prompt = prompt_vec[0].to_owned().clone();
 
                 let client = reqwest::Client::new();
-                let res = util::get_response(client, prompt, &self.config).await;
+                let res = utils::get_response(client, prompt, &self.config).await;
 
                 let content = AnyMessageEventContent::RoomMessage(MessageEventContent::text_plain(
                     res.get_text()

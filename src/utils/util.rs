@@ -1,5 +1,5 @@
 use crate::{
-    config::BotConfig,
+    bot::BotConfig,
     openai::{GPTRequest, GPTResponse},
 };
 use reqwest::header;
