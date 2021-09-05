@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct GPTRequest {
     prompt: String,
     max_tokens: u16,
-    temperature: u8,
+    temperature: f32,
     top_p: u8,
     n: u8,
     stream: bool,
@@ -34,7 +34,7 @@ impl GPTRequest {
         Self {
             prompt: String::new(),
             max_tokens: 16,
-            temperature: 1,
+            temperature: 0.45,
             top_p: 1,
             n: 1,
             stream: false,
@@ -51,7 +51,7 @@ impl GPTRequest {
         self.max_tokens = tokens
     }
 
-    pub fn set_temperature(&mut self, temperature: u8) {
+    pub fn set_temperature(&mut self, temperature: f32) {
         self.temperature = temperature;
     }
 

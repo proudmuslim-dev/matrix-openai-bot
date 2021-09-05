@@ -1,8 +1,14 @@
-use crate::openai::{GPTRequest, GPTResponse};
+use crate::{
+    config::BotConfig,
+    openai::{GPTRequest, GPTResponse},
+};
 use reqwest::header;
-use std::env;
 
-pub async fn get_response(client: reqwest::Client, prompt: String) -> GPTResponse {
+pub async fn get_response(
+    client: reqwest::Client,
+    prompt: String,
+    config: &BotConfig,
+) -> GPTResponse {
     let mut req_body = GPTRequest::new();
     req_body.set_prompt(prompt.replace(r#"""#, "\"").as_str());
 
@@ -10,7 +16,7 @@ pub async fn get_response(client: reqwest::Client, prompt: String) -> GPTRespons
     headers.insert("Content-Type", "application/json".parse().unwrap());
     headers.insert(
         "Authorization",
-        format!("Bearer {}", env::var("OPENAI_SK").unwrap())
+        format!("Bearer {}", config.openai_key())
             .as_str()
             .parse()
             .unwrap(),

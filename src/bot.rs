@@ -8,15 +8,18 @@ use matrix_sdk::{
     Client, ClientConfig, EventHandler, SyncSettings,
 };
 
-use crate::util;
+use crate::{config::BotConfig, util};
 
+use std::process::exit;
 use url::Url;
 
-pub struct OpenAIBot {}
+pub struct OpenAIBot {
+    config: BotConfig,
+}
 
 impl OpenAIBot {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(config: BotConfig) -> Self {
+        Self { config }
     }
 }
 
@@ -43,7 +46,7 @@ impl EventHandler for OpenAIBot {
                 let prompt = prompt_vec[0].to_owned().clone();
 
                 let client = reqwest::Client::new();
-                let res = util::get_response(client, prompt).await;
+                let res = util::get_response(client, prompt, &self.config).await;
 
                 let content = AnyMessageEventContent::RoomMessage(MessageEventContent::text_plain(
                     res.get_text()
@@ -60,29 +63,38 @@ impl EventHandler for OpenAIBot {
     }
 }
 
-pub async fn login_and_sync(
-    homeserver_url: String,
-    username: String,
-    password: String,
-) -> Result<(), matrix_sdk::Error> {
+pub async fn start() -> Result<(), matrix_sdk::Error> {
     let mut home = dirs::home_dir().expect("No home directory found!");
     home.push("matrix-openai-bot");
 
+    let config_file: BotConfig = confy::load("matrix-openai-bot").unwrap_or_else(|error| {
+        eprintln!("Error: {}", error);
+        exit(1)
+    });
+
     let client_config = ClientConfig::new().store_path(home);
 
-    let homeserver_url = Url::parse(&homeserver_url).expect("Couldn't parse homeserver URL.");
+    let homeserver_url =
+        Url::parse(&config_file.homeserver()).expect("Couldn't parse homeserver URL.");
 
     let client = Client::new_with_config(homeserver_url, client_config).unwrap();
 
     client
-        .login(&username, &password, None, Some("OpenAI Bot"))
+        .login(
+            &config_file.username(),
+            &config_file.password(),
+            None,
+            Some("OpenAI Bot"),
+        )
         .await?;
 
-    println!("Logged in as: {}", username);
+    println!("Logged in as: {}", &config_file.username());
 
     client.sync_once(SyncSettings::default()).await.unwrap();
 
-    client.set_event_handler(Box::new(OpenAIBot::new())).await;
+    client
+        .set_event_handler(Box::new(OpenAIBot::new(config_file)))
+        .await;
 
     let settings = SyncSettings::default().token(client.sync_token().await.unwrap());
     client.sync(settings).await;
