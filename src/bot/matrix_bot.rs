@@ -43,7 +43,7 @@ impl EventHandler for OpenAIBot {
 
             if msg_body.ends_with("--prompt") {
                 let prompt_vec: Vec<&str> = msg_body.split("--prompt").collect();
-                let prompt = prompt_vec[0].to_owned().clone();
+                let prompt = prompt_vec[0].to_owned();
 
                 let client = reqwest::Client::new();
                 let res = utils::get_response(client, prompt, &self.config).await;
@@ -75,14 +75,14 @@ pub async fn start() -> Result<(), matrix_sdk::Error> {
     let client_config = ClientConfig::new().store_path(home);
 
     let homeserver_url =
-        Url::parse(&config_file.homeserver()).expect("Couldn't parse homeserver URL.");
+        Url::parse(config_file.homeserver()).expect("Couldn't parse homeserver URL.");
 
     let client = Client::new_with_config(homeserver_url, client_config).unwrap();
 
     client
         .login(
-            &config_file.username(),
-            &config_file.password(),
+            config_file.username(),
+            config_file.password(),
             None,
             Some("OpenAI Bot"),
         )

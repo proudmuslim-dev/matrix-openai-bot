@@ -30,9 +30,10 @@ struct Choices {
 }
 
 impl GPTRequest {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
-            prompt: String::new(),
+            prompt: "".to_owned(),
             max_tokens: 16,
             temperature: 0.45,
             top_p: 1,
