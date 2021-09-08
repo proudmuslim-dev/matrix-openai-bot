@@ -33,4 +33,8 @@ impl BotConfig {
     pub fn password(&self) -> &str {
         &self.password
     }
+
+    pub fn as_array(&self) -> [&str; 3] {
+        [&self.username, &self.password, &self.openai_key]
+    }
 }

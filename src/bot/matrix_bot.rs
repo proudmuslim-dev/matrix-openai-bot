@@ -72,6 +72,13 @@ pub async fn start() -> Result<(), matrix_sdk::Error> {
         exit(1)
     });
 
+    for key in config_file.as_array() {
+        if key.is_empty() {
+            eprintln!("Please ensure you have filled out the config file completely. Your configuration file should be located under the 'matrix-openai-bot' folder inside your config directory.");
+            exit(1)
+        }
+    }
+
     let client_config = ClientConfig::new().store_path(home);
 
     let homeserver_url =
