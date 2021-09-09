@@ -10,10 +10,9 @@ use matrix_sdk::{
 
 use crate::{bot::BotConfig, utils};
 
+use lazy_static::lazy_static;
 use std::process::exit;
 use url::Url;
-
-use lazy_static::lazy_static;
 
 lazy_static! {
     static ref HTTP_CLIENT: reqwest::Client = reqwest::Client::new();
