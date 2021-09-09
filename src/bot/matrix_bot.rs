@@ -13,6 +13,12 @@ use crate::{bot::BotConfig, utils};
 use std::process::exit;
 use url::Url;
 
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref HTTP_CLIENT: reqwest::Client = reqwest::Client::new();
+}
+
 pub struct OpenAIBot {
     config: BotConfig,
 }
@@ -45,8 +51,7 @@ impl EventHandler for OpenAIBot {
                 let prompt_vec: Vec<&str> = msg_body.split("--prompt").collect();
                 let prompt = prompt_vec[0].to_owned();
 
-                let client = reqwest::Client::new();
-                let res = utils::get_response(client, prompt, &self.config).await;
+                let res = utils::get_response(&HTTP_CLIENT, prompt, &self.config).await;
 
                 let content = AnyMessageEventContent::RoomMessage(MessageEventContent::text_plain(
                     res.get_text()

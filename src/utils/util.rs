@@ -5,7 +5,7 @@ use crate::{
 use reqwest::header;
 
 pub async fn get_response(
-    client: reqwest::Client,
+    client: &reqwest::Client,
     prompt: String,
     config: &BotConfig,
 ) -> GPTResponse {
