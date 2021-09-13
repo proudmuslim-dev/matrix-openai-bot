@@ -8,7 +8,7 @@ Matrix bot inspired by [Shirt Bot](https://github.com/Cyclcrclicly/shirt-bot/).
 
 ## Usage
 
-1. Run the bot after building it (don't panic if you see an error, this is expected)
+1. Run the bot after building it or grabbing the latest release
 ```bash
 $ matrix-openai-bot 
 ```

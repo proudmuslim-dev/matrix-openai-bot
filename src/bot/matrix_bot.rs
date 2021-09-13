@@ -1,60 +1,17 @@
-use matrix_sdk::{
-    room::Room,
-    ruma::events::{
-        room::message::{MessageEventContent, MessageType, TextMessageEventContent},
-        AnyMessageEventContent, SyncMessageEvent,
-    },
-    Client, ClientConfig, SyncSettings,
-};
+use matrix_sdk::{Client, ClientConfig, SyncSettings};
 
-use crate::{bot::BotConfig, utils};
+use crate::bot::{events, BotConfig};
 
 use lazy_static::lazy_static;
 use std::process::exit;
 use url::Url;
 
 lazy_static! {
-    static ref HTTP_CLIENT: reqwest::Client = reqwest::Client::new();
-    static ref CONFIG_FILE: BotConfig = confy::load("matrix-openai-bot").unwrap_or_else(|error| {
-        eprintln!("Error: {}", error);
-        exit(1)
-    });
-}
-
-async fn on_room_message(event: SyncMessageEvent<MessageEventContent>, room: Room) {
-    if let Room::Joined(room) = room {
-        let msg_body = if let SyncMessageEvent {
-            content:
-                MessageEventContent {
-                    msgtype: MessageType::Text(TextMessageEventContent { body: msg_body, .. }),
-                    ..
-                },
-            ..
-        } = event
-        {
-            msg_body
-        } else {
-            return;
-        };
-
-        if msg_body.ends_with("--prompt") {
-            let prompt_vec: Vec<&str> = msg_body.split("--prompt").collect();
-            let prompt = prompt_vec[0].to_owned();
-
-            let res = utils::get_response(&HTTP_CLIENT, prompt, &CONFIG_FILE).await;
-
-            let content = AnyMessageEventContent::RoomMessage(MessageEventContent::text_plain(
-                res.get_text()
-                    .replace("\\n", "\n")
-                    .replace("\\t", "\t")
-                    .as_str(),
-            ));
-
-            room.send(content, None).await.unwrap();
-
-            println!("Message sent");
-        }
-    }
+    pub static ref CONFIG_FILE: BotConfig =
+        confy::load("matrix-openai-bot").unwrap_or_else(|error| {
+            eprintln!("Error: {}", error);
+            exit(1)
+        });
 }
 
 pub async fn start() -> Result<(), matrix_sdk::Error> {
@@ -88,7 +45,7 @@ pub async fn start() -> Result<(), matrix_sdk::Error> {
 
     client.sync_once(SyncSettings::default()).await.unwrap();
 
-    client.register_event_handler(on_room_message).await;
+    client.register_event_handler(events::on_room_message).await;
 
     let settings = SyncSettings::default().token(client.sync_token().await.unwrap());
     client.sync(settings).await;
