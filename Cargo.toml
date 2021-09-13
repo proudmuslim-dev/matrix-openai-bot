@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-matrix-sdk = { git = "https://github.com/matrix-org/matrix-rust-sdk", rev = "52fd551" }
+matrix-sdk = "0.4.1"
 # Do not yell at me. I repeat, do NOT yell at me.
 tokio = { version = "1.11.0", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
