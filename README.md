@@ -15,7 +15,7 @@ $ matrix-openai-bot
 
 2. Edit the generated configuration file and run the bot again
 ```bash
-$ vim ~/.config/matrix-openai-bot/matrix-openai-bot.toml # Substitute '~/.config` for your system config path 
+$ vim ~/.config/matrix-openai-bot/matrix-openai-bot.toml # Substitute `~/.config` for your system config path 
 $ matrix-openai-bot
 ```
 
